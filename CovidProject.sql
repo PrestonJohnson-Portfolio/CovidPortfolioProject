@@ -1,31 +1,27 @@
+--Preston Johnson
+--Covid Cases Project
+
+
 select * 
-from PortfolioProject..CovidDeaths$
+from PortfolioProject..CovidDeaths$	--view covid deaths table, order by column 3 and 4
 where continent is not null
 order by 3,4
 
---select * 
---from PortfolioProject..CovidVaccinations$
---order by 3,4
-
 -- get data were going to be using 
-select location, date, total_cases, new_cases, total_deaths, population
+select location, date, total_cases, new_cases, total_deaths, population		
 from PortfolioProject..CovidDeaths$
 where continent is not null
 order by 1,2
 
---total cases vs total deaths
---shows how likely you are to die if infected
+--total cases vs total deaths, will show how likely you are to die if infected
 select location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 from PortfolioProject..CovidDeaths$
---where location like '%united states%'
 where continent is not null
 order by 1,2
 
---total cases vs population
---shows percentage of population that got covid
+--total cases vs population, will show percentage of population that got covid
 select location, date, total_cases,population, (total_cases/population)*100 as CasePercentage
 from PortfolioProject..CovidDeaths$
---where location like '%united states%'
 order by 1,2
 
 --countries whith the highest infection rate by population
@@ -38,19 +34,12 @@ order by CasePercentage desc
 --countries with the highest death count by population
 select location, max(cast(total_deaths as int)) as TotalDeathCount  --total deaths column is an nvarchar and was producing false results, converted to int to fix
 from PortfolioProject..CovidDeaths$									
-where continent is not null											--want location information that has a continent value also, 
-group by  location													-- is not null gets rid of rows with continent names that are listed as location 
+where continent is not null					    --want location information that has a continent value also, 
+group by  location						    -- is not null gets rid of rows with continent names that are listed as location 
 order by TotalDeathCount desc
 
--- continents with highest death count, looks for rows where a continent name is in location column
---select location, max(cast(total_deaths as int)) as TotalDeathCount  
---from PortfolioProject..CovidDeaths$									
---where continent is null											
---group by location													
---order by TotalDeathCount desc
-
 --continents with highest death count
-select continent, max(cast(total_deaths as int)) as TotalDeathCount
+select continent, max(cast(total_deaths as int)) as TotalDeathCount   --same nvarchar issue, cast as int
 from PortfolioProject..CovidDeaths$		
 where continent is not null
 group by continent
@@ -58,8 +47,7 @@ order by TotalDeathCount desc
 
 
 --global counts
-
-select sum(new_cases) as Total_Cases, sum(cast(new_deaths as int)) as Total_Deaths,sum(cast(new_deaths as int))/sum(new_cases)*100 as DeathPercentage
+select sum(new_cases) as Total_Cases, sum(cast(new_deaths as int)) as Total_Deaths,sum(cast(new_deaths as int))/sum(new_cases)*100 as DeathPercentage  
 from PortfolioProject..CovidDeaths$
 where continent is not null
 --group by date
